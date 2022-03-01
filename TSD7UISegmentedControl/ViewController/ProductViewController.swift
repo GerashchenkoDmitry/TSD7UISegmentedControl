@@ -52,6 +52,7 @@ final class ProductViewController: UIViewController {
     private func configureUI() {
         view.backgroundColor = .systemBackground
         
+        configureShareButton()
         configureProductImage()
         configureProductLabel()
         configureColorlabel()
@@ -61,6 +62,12 @@ final class ProductViewController: UIViewController {
         configureQuantityLabel()
         configureQuantityTextField()
         configureToCartButton()
+    }
+    
+    // MARK: Configure shareBarButton
+    
+    private func configureShareButton() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "square.and.arrow.up"), style: .plain, target: self, action: #selector(shareButtonTapped))
     }
     
     // MARK: Configure productImageView
@@ -218,6 +225,8 @@ final class ProductViewController: UIViewController {
         view.addSubview(quantityTextField)
     }
     
+    // MARK: Configure toCartButton
+    
     private func configureToCartButton() {
         let viewWidth = view.bounds.width
         
@@ -232,6 +241,21 @@ final class ProductViewController: UIViewController {
         view.addSubview(toCartButton)
     }
     
+    // MARK: shareButtonTapped
+    // Call UIActivityViewController for share
+    
+    @objc private func shareButtonTapped(sender: Any) {
+        let item = "some message"
+        
+        let activityViewController = UIActivityViewController(activityItems: [item], applicationActivities: nil)
+        DispatchQueue.main.async {
+            self.present(activityViewController, animated: true, completion: nil)
+        }
+    }
+    
+    // MARK: segmentedControlChanged
+    // Change product color and product image
+    
     @objc private func selectColor(sender: UISegmentedControl) {
         let segmentIndex = sender.selectedSegmentIndex
         guard let segmentTitle = sender.titleForSegment(at: segmentIndex) else { return }
@@ -239,6 +263,9 @@ final class ProductViewController: UIViewController {
         let senderIndex = sender.selectedSegmentIndex
         self.product.color = sender.titleForSegment(at: senderIndex)
     }
+    
+    // MARK: showQuantityAlert
+    // Call UIAlertViewController with textField to set quantity of a product
     
     @objc private func showQuantityAlert() {
         let alertController = UIAlertController(title: "Quantity", message: "Enter desirable quantity and press OK", preferredStyle: .alert)
@@ -259,6 +286,10 @@ final class ProductViewController: UIViewController {
         alertController.addAction(okAction)
         present(alertController, animated: true, completion: nil)
     }
+    
+    // MARK: moveToCheckout
+    // Add Item to cart
+    // Call UIAlertViewController to change continue choice or move to CartViewController
     
     @objc private func moveToCheckout() {
         let alertController = UIAlertController(title: "Successful", message: "Move to Cart or continue shopping?", preferredStyle: .alert)
